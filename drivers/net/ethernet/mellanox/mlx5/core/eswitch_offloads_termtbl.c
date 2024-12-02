@@ -233,8 +233,8 @@ mlx5_eswitch_termtbl_required(struct mlx5_eswitch *esw,
 
 	/* hairpin */
 	for (i = esw_attr->split_count; i < esw_attr->out_count; i++)
-		if (!esw_attr->dest_int_port && esw_attr->dests[i].rep &&
-		    esw_attr->dests[i].rep->vport == MLX5_VPORT_UPLINK)
+		if (!esw_attr->dest_int_port && esw_attr->dests[i].vport_valid &&
+		    esw_attr->dests[i].vport == MLX5_VPORT_UPLINK)
 			return true;
 
 	return false;
@@ -311,6 +311,8 @@ revert_changes:
 
 	for (curr_dest = 0; curr_dest < num_vport_dests; curr_dest++) {
 		struct mlx5_termtbl_handle *tt = attr->dests[curr_dest].termtbl;
+
+		attr->dests[curr_dest].termtbl = NULL;
 
 		/* search for the destination associated with the
 		 * current term table

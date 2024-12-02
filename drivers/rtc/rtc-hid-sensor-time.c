@@ -296,14 +296,12 @@ err_open:
 	return ret;
 }
 
-static int hid_time_remove(struct platform_device *pdev)
+static void hid_time_remove(struct platform_device *pdev)
 {
 	struct hid_sensor_hub_device *hsdev = dev_get_platdata(&pdev->dev);
 
 	sensor_hub_device_close(hsdev);
 	sensor_hub_remove_callback(hsdev, HID_USAGE_SENSOR_TIME);
-
-	return 0;
 }
 
 static const struct platform_device_id hid_time_ids[] = {

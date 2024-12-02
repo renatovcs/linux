@@ -15,6 +15,7 @@
 #include <linux/kernel.h>
 #include <linux/sysfs.h>
 #include <linux/slab.h>
+#include <linux/types.h>
 #include <linux/module.h>
 #include <linux/regmap.h>
 #include <linux/bitops.h>
@@ -215,7 +216,7 @@ static irqreturn_t kxsd9_trigger_handler(int irq, void *p)
 	 */
 	struct {
 		__be16 chan[4];
-		s64 ts __aligned(8);
+		aligned_s64 ts;
 	} hw_values;
 	int ret;
 
@@ -370,10 +371,7 @@ static int kxsd9_power_down(struct kxsd9_state *st)
 	 * make sure we conserve power even if there are others users on the
 	 * regulators.
 	 */
-	ret = regmap_update_bits(st->map,
-				 KXSD9_REG_CTRL_B,
-				 KXSD9_CTRL_B_ENABLE,
-				 0);
+	ret = regmap_clear_bits(st->map, KXSD9_REG_CTRL_B, KXSD9_CTRL_B_ENABLE);
 	if (ret)
 		return ret;
 

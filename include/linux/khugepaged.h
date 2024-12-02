@@ -2,8 +2,7 @@
 #ifndef _LINUX_KHUGEPAGED_H
 #define _LINUX_KHUGEPAGED_H
 
-#include <linux/sched/coredump.h> /* MMF_VM_HUGEPAGE */
-
+extern unsigned int khugepaged_max_ptes_none __read_mostly;
 #ifdef CONFIG_TRANSPARENT_HUGEPAGE
 extern struct attribute_group khugepaged_attr_group;
 
@@ -15,6 +14,7 @@ extern void __khugepaged_exit(struct mm_struct *mm);
 extern void khugepaged_enter_vma(struct vm_area_struct *vma,
 				 unsigned long vm_flags);
 extern void khugepaged_min_free_kbytes_update(void);
+extern bool current_is_khugepaged(void);
 #ifdef CONFIG_SHMEM
 extern int collapse_pte_mapped_thp(struct mm_struct *mm, unsigned long addr,
 				   bool install_pmd);
@@ -56,6 +56,11 @@ static inline int collapse_pte_mapped_thp(struct mm_struct *mm,
 
 static inline void khugepaged_min_free_kbytes_update(void)
 {
+}
+
+static inline bool current_is_khugepaged(void)
+{
+	return false;
 }
 #endif /* CONFIG_TRANSPARENT_HUGEPAGE */
 
